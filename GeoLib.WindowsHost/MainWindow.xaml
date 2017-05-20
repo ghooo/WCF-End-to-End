@@ -8,7 +8,8 @@
         Title="MainWindow" Height="338.83" Width="264.734">
     <Grid>
         <Button x:Name="btnStart" Content="Start Services" HorizontalAlignment="Left" Margin="84,77,0,0" VerticalAlignment="Top" Width="75" Click="btnStart_Click"/>
-        <Button x:Name="btnStop" Content="Stop Services" HorizontalAlignment="Left" Margin="84,185,0,0" VerticalAlignment="Top" Width="75" Click="btnStop_Click"/>
+        <Button x:Name="btnStop" Content="Stop Services" HorizontalAlignment="Left" Margin="84,129,0,0" VerticalAlignment="Top" Width="75" Click="btnStop_Click"/>
+        <Label x:Name="msgLbl" Content="" HorizontalAlignment="Left" Margin="73,216,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
