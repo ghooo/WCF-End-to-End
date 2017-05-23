@@ -4,11 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GeoLib.Services
 {
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class GeoManager : IGeoService
     {
         public GeoManager()
@@ -35,6 +38,8 @@ namespace GeoLib.Services
         IStateRepository _StateRepository = null;
         public ZipCodeData GetZipInfo(string zip)
         {
+            throw new DivideByZeroException("This is ghooos exception!");
+
             ZipCodeData zipCodeData = null;
 
             IZipCodeRepository zipCodeRepository = _ZipCodeRepository ?? new ZipCodeRepository();

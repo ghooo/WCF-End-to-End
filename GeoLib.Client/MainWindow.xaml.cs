@@ -26,9 +26,13 @@ namespace GeoLib.Client
     /// </summary>
     public partial class MainWindow : Window
     {
+        private GeoClient _Proxy;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            _Proxy = new GeoClient("tcpEP");
 
             this.Title = "UI Running on Thread " + Thread.CurrentThread.ManagedThreadId +
                          " | Process " + Process.GetCurrentProcess().Id.ToString();
@@ -55,8 +59,23 @@ namespace GeoLib.Client
         {
             if (stateTxt.Text != null)
             {
-                EndpointAddress address = new EndpointAddress("net.tcp://localhost:8009/GeoService");
-                Binding binding = new NetTcpBinding();
+                //GeoClient proxy = new GeoClient("tcpEP");
+
+                //proxy.Open();
+
+                IEnumerable<ZipCodeData> data = _Proxy.GetZips(stateTxt.Text);
+                if (data != null)
+                {
+                    zipCodesLst.ItemsSource = data;
+                }
+
+                //proxy.Close();
+
+                /*
+                // Setting proxy programmatically.
+                EndpointAddress address = new EndpointAddress("http://localhost/GeoService");
+                BasicHttpBinding binding = new BasicHttpBinding();
+                binding.MaxReceivedMessageSize = 2000000;
 
                 GeoClient proxy = new GeoClient(binding, address);
 
@@ -67,6 +86,7 @@ namespace GeoLib.Client
                 }
 
                 proxy.Close();
+                */
             }
         }
 
