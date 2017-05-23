@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GeoLib.Services;
+using GeoLib.WindowsHost.Contracts;
 using GeoLib.WindowsHost.Services;
 
 namespace GeoLib.WindowsHost
@@ -37,10 +38,14 @@ namespace GeoLib.WindowsHost
             MainUI = this;
 
             this.Title = "UI Running on Thread " + Thread.CurrentThread.ManagedThreadId;
+
+            _SyncContext = SynchronizationContext.Current;
         }
 
         private ServiceHost _HostGeoManager = null;
         private ServiceHost _HostMessageManager = null;
+
+        private SynchronizationContext _SyncContext = null;
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
@@ -65,10 +70,39 @@ namespace GeoLib.WindowsHost
 
         public void ShowMessage(string message)
         {
-            int thread = Thread.CurrentThread.ManagedThreadId;
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+            int procesId = Process.GetCurrentProcess().Id;
 
-            msgLbl.Content = message + Environment.NewLine + "Thread " + thread +
-                             " | Process " + Process.GetCurrentProcess().Id;
+            SendOrPostCallback callback = new SendOrPostCallback(arg =>
+            {
+                msgLbl.Content = message + Environment.NewLine +
+                    "UI Thread " + Thread.CurrentThread.ManagedThreadId + " | Process " + Process.GetCurrentProcess().Id + Environment.NewLine +
+                    "Service Thread " + threadId + " | Process " + procesId + Environment.NewLine;
+            });
+
+            _SyncContext.Send(callback, null);
+        }
+
+        private void inprocBtn_Click(object sender, RoutedEventArgs e)
+        {
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+            int procesId = Process.GetCurrentProcess().Id;
+
+            Thread thread = new Thread(() =>
+            {
+                ChannelFactory<IMessageService> factory = new ChannelFactory<IMessageService>("");
+                IMessageService proxy = factory.CreateChannel();
+
+                proxy.ShowMessage(
+                        "UI Thread " + threadId + " | Process " + procesId + Environment.NewLine +
+                        "Client Thread " + Thread.CurrentThread.ManagedThreadId + " | Process " + Process.GetCurrentProcess().Id
+                    );
+
+                factory.Close();
+            });
+
+            thread.IsBackground = true;
+            thread.Start();
         }
     }
 }
