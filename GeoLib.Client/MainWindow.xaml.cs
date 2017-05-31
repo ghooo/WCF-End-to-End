@@ -42,16 +42,27 @@ namespace GeoLib.Client
         {
             if (zipCodeTxt.Text != "")
             {
-                GeoClient proxy = new GeoClient("tcpEP");
+                // Metadata Exchange
+                ServiceReference1.GeoServiceClient proxy = new ServiceReference1.GeoServiceClient("BasicHttpBinding_IGeoService");
 
                 ZipCodeData data = proxy.GetZipInfo(zipCodeTxt.Text);
+
                 if (data != null)
                 {
                     cityLbl.Content = data.City;
                     stateLbl.Content = data.State;
                 }
 
-                proxy.Close();
+                //GeoClient proxy = new GeoClient("tcpEP");
+
+                //ZipCodeData data = proxy.GetZipInfo(zipCodeTxt.Text);
+                //if (data != null)
+                //{
+                //    cityLbl.Content = data.City;
+                //    stateLbl.Content = data.State;
+                //}
+
+                //proxy.Close();
             }
         }
 

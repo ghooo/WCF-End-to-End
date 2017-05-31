@@ -38,8 +38,6 @@ namespace GeoLib.Services
         IStateRepository _StateRepository = null;
         public ZipCodeData GetZipInfo(string zip)
         {
-            throw new DivideByZeroException("This is ghooos exception!");
-
             ZipCodeData zipCodeData = null;
 
             IZipCodeRepository zipCodeRepository = _ZipCodeRepository ?? new ZipCodeRepository();
