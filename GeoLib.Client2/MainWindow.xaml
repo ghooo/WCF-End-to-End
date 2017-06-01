@@ -1,0 +1,17 @@
+﻿<Window x:Class="GeoLib.Client2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GeoLib.Client2"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="315.064" Width="221.37">
+    <Grid>
+        <Label x:Name="label" Content="Zip Code" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="zipCodeTxt" HorizontalAlignment="Left" Height="23" Margin="73,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="getZipInfoBtn" Content="Get Zip Info" HorizontalAlignment="Left" Margin="16,100,0,0" VerticalAlignment="Top" Width="75" Click="getZipInfoBtn_Click"/>
+        <Label x:Name="cityLbl" Content="" HorizontalAlignment="Left" Margin="40,134,0,0" VerticalAlignment="Top" Width="153"/>
+        <Label x:Name="stateLbl" Content="" HorizontalAlignment="Left" Margin="40,177,0,0" VerticalAlignment="Top" Width="153"/>
+
+    </Grid>
+</Window>

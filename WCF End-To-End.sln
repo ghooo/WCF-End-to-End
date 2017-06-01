@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoLib.Core", "GeoLib.Core\GeoLib.Core.csproj", "{461922D9-747F-4BB0-AC2E-4737139EEDB6}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoLib.Client", "GeoLib.Client\GeoLib.Client.csproj", "{78190B65-E600-4410-B6D5-0D2B3909795C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoLib.Proxies", "GeoLib.Proxies\GeoLib.Proxies.csproj", "{3E7F15C8-7790-4C0E-A7FA-ADBDF3220A15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoLib.Client2", "GeoLib.Client2\GeoLib.Client2.csproj", "{F98665C4-0943-4240-B017-44965DE9EE50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,14 @@ Global
 		{3E7F15C8-7790-4C0E-A7FA-ADBDF3220A15}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3E7F15C8-7790-4C0E-A7FA-ADBDF3220A15}.Release|x64.ActiveCfg = Release|Any CPU
 		{3E7F15C8-7790-4C0E-A7FA-ADBDF3220A15}.Release|x64.Build.0 = Release|Any CPU
+		{F98665C4-0943-4240-B017-44965DE9EE50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F98665C4-0943-4240-B017-44965DE9EE50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F98665C4-0943-4240-B017-44965DE9EE50}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F98665C4-0943-4240-B017-44965DE9EE50}.Debug|x64.Build.0 = Debug|Any CPU
+		{F98665C4-0943-4240-B017-44965DE9EE50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F98665C4-0943-4240-B017-44965DE9EE50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F98665C4-0943-4240-B017-44965DE9EE50}.Release|x64.ActiveCfg = Release|Any CPU
+		{F98665C4-0943-4240-B017-44965DE9EE50}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

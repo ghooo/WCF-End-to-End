@@ -8,10 +8,11 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GeoLib.Services
 {
-    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true, InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class GeoManager : IGeoService
     {
         public GeoManager()
@@ -36,6 +37,8 @@ namespace GeoLib.Services
 
         IZipCodeRepository _ZipCodeRepository = null;
         IStateRepository _StateRepository = null;
+
+        private int _Counter = 0;
         public ZipCodeData GetZipInfo(string zip)
         {
             ZipCodeData zipCodeData = null;
@@ -52,6 +55,11 @@ namespace GeoLib.Services
                     ZipCode = zipCodeEntity.Zip
                 };
             }
+
+            _Counter++;
+            MessageBox.Show(
+                string.Format("{0} = {1}, {2}", zip, zipCodeData.City, zipCodeData.State),
+                "Call counter " + _Counter);
 
             return zipCodeData;
         }

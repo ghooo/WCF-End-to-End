@@ -26,13 +26,14 @@ namespace GeoLib.Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private GeoClient _Proxy;
+        private StatefulGeoClient _Proxy;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            _Proxy = new GeoClient("tcpEP");
+            //_Proxy = new GeoClient("tcpEP");
+            _Proxy = new StatefulGeoClient();
 
             this.Title = "UI Running on Thread " + Thread.CurrentThread.ManagedThreadId +
                          " | Process " + Process.GetCurrentProcess().Id.ToString();
@@ -42,16 +43,24 @@ namespace GeoLib.Client
         {
             if (zipCodeTxt.Text != "")
             {
-                // Metadata Exchange
-                ServiceReference1.GeoServiceClient proxy = new ServiceReference1.GeoServiceClient("BasicHttpBinding_IGeoService");
-
-                ZipCodeData data = proxy.GetZipInfo(zipCodeTxt.Text);
-
+                // Instancing and concurrency
+                ZipCodeData data = _Proxy.GetZipInfo();
                 if (data != null)
                 {
                     cityLbl.Content = data.City;
                     stateLbl.Content = data.State;
                 }
+
+                //// Metadata Exchange
+                //ServiceReference1.GeoServiceClient proxy = new ServiceReference1.GeoServiceClient("BasicHttpBinding_IGeoService");
+
+                //ZipCodeData data = proxy.GetZipInfo(zipCodeTxt.Text);
+
+                //if (data != null)
+                //{
+                //    cityLbl.Content = data.City;
+                //    stateLbl.Content = data.State;
+                //}
 
                 //GeoClient proxy = new GeoClient("tcpEP");
 
@@ -68,37 +77,38 @@ namespace GeoLib.Client
 
         private void getZipCodesBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (stateTxt.Text != null)
-            {
-                //GeoClient proxy = new GeoClient("tcpEP");
+            throw new NotImplementedException();
+            //if (stateTxt.Text != null)
+            //{
+            //    //GeoClient proxy = new GeoClient("tcpEP");
 
-                //proxy.Open();
+            //    //proxy.Open();
 
-                IEnumerable<ZipCodeData> data = _Proxy.GetZips(stateTxt.Text);
-                if (data != null)
-                {
-                    zipCodesLst.ItemsSource = data;
-                }
+            //    IEnumerable<ZipCodeData> data = _Proxy.GetZips(stateTxt.Text);
+            //    if (data != null)
+            //    {
+            //        zipCodesLst.ItemsSource = data;
+            //    }
 
-                //proxy.Close();
+            //    //proxy.Close();
 
-                /*
-                // Setting proxy programmatically.
-                EndpointAddress address = new EndpointAddress("http://localhost/GeoService");
-                BasicHttpBinding binding = new BasicHttpBinding();
-                binding.MaxReceivedMessageSize = 2000000;
+            //    /*
+            //    // Setting proxy programmatically.
+            //    EndpointAddress address = new EndpointAddress("http://localhost/GeoService");
+            //    BasicHttpBinding binding = new BasicHttpBinding();
+            //    binding.MaxReceivedMessageSize = 2000000;
 
-                GeoClient proxy = new GeoClient(binding, address);
+            //    GeoClient proxy = new GeoClient(binding, address);
 
-                IEnumerable<ZipCodeData> data = proxy.GetZips(stateTxt.Text);
-                if (data != null)
-                {
-                    zipCodesLst.ItemsSource = data;
-                }
+            //    IEnumerable<ZipCodeData> data = proxy.GetZips(stateTxt.Text);
+            //    if (data != null)
+            //    {
+            //        zipCodesLst.ItemsSource = data;
+            //    }
 
-                proxy.Close();
-                */
-            }
+            //    proxy.Close();
+            //    */
+            //}
         }
 
         private void makeCallBtn_Click(object sender, RoutedEventArgs e)
@@ -138,6 +148,26 @@ namespace GeoLib.Client
                 proxy.Close();
             }
             */
+        }
+
+        private void pushBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (zipCodeTxt.Text != "")
+            {
+                _Proxy.PushZip(zipCodeTxt.Text);
+            }
+        }
+
+        private void getInRangeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (zipCodeTxt != null && rangeTxt.Text != "")
+            {
+                IEnumerable<ZipCodeData> data = _Proxy.GetZips(int.Parse(rangeTxt.Text));
+                if (data != null)
+                {
+                    zipCodesLst.ItemsSource = data;
+                }
+            }
         }
     }
 }
