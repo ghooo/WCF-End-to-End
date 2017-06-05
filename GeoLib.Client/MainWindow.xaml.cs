@@ -26,14 +26,14 @@ namespace GeoLib.Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private StatefulGeoClient _Proxy;
+        private GeoClient _Proxy;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            //_Proxy = new GeoClient("tcpEP");
-            _Proxy = new StatefulGeoClient();
+            _Proxy = new GeoClient("tcpEP");
+            //_Proxy = new StatefulGeoClient();
 
             this.Title = "UI Running on Thread " + Thread.CurrentThread.ManagedThreadId +
                          " | Process " + Process.GetCurrentProcess().Id.ToString();
@@ -43,13 +43,63 @@ namespace GeoLib.Client
         {
             if (zipCodeTxt.Text != "")
             {
-                // Instancing and concurrency
-                ZipCodeData data = _Proxy.GetZipInfo();
-                if (data != null)
+                try
                 {
-                    cityLbl.Content = data.City;
-                    stateLbl.Content = data.State;
+                    ZipCodeData data = _Proxy.GetZipInfo(zipCodeTxt.Text);
+
+                    if (data != null)
+                    {
+                        cityLbl.Content = data.City;
+                        stateLbl.Content = data.State;
+                    }
                 }
+                catch (FaultException<ExceptionDetail> ex)
+                {
+                    MessageBox.Show("FaultException<ExceptionDetail> thrown by service.\n\rException type: " +
+                                    ex.GetType().Name + "\n\r" +
+                                    "Message: " + ex.Message + "\n\r" +
+                                    "Proxy state: " + _Proxy.State.ToString());
+                }
+                catch (FaultException<ApplicationException> ex)
+                {
+                    MessageBox.Show("FaultException<ApplicationException> thrown by service.\n\rException type: " +
+                                    ex.GetType().Name + "\n\r" +
+                                    "Reason: " + ex.Message + "\n\r" +
+                                    "Message: " + ex.Detail.Message + "\n\r" +
+                                    "Proxy state: " + _Proxy.State.ToString());
+                }
+                catch (FaultException<NotFoundData> ex)
+                {
+                    MessageBox.Show("FaultException<NotFoundData> thrown by service.\n\rException type: " +
+                                    ex.GetType().Name + "\n\r" +
+                                    "Reason: " + ex.Message + "\n\r" +
+                                    "Message: " + ex.Detail.Message + "\n\r" +
+                                    "Time: " + ex.Detail.When + "\n\r" +
+                                    "User: " + ex.Detail.User + "\n\r" +
+                                    "Proxy state: " + _Proxy.State.ToString());
+                }
+                catch (FaultException ex)
+                {
+                    MessageBox.Show("FaultException thrown by service.\n\rException type: " +
+                                    ex.GetType().Name + "\n\r" +
+                                    "Message: " + ex.Message + "\n\r" +
+                                    "Proxy state: " + _Proxy.State.ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Exception thrown by service.\n\rException type: " +
+                                    ex.GetType().Name + "\n\r" +
+                                    "Message: " + ex.Message + "\n\r" +
+                                    "Proxy state: " + _Proxy.State.ToString());
+                }
+
+                //// Instancing and concurrency
+                //ZipCodeData data = _Proxy.GetZipInfo();
+                //if (data != null)
+                //{
+                //    cityLbl.Content = data.City;
+                //    stateLbl.Content = data.State;
+                //}
 
                 //// Metadata Exchange
                 //ServiceReference1.GeoServiceClient proxy = new ServiceReference1.GeoServiceClient("BasicHttpBinding_IGeoService");
@@ -152,22 +202,22 @@ namespace GeoLib.Client
 
         private void pushBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (zipCodeTxt.Text != "")
-            {
-                _Proxy.PushZip(zipCodeTxt.Text);
-            }
+            //if (zipCodeTxt.Text != "")
+            //{
+            //    _Proxy.PushZip(zipCodeTxt.Text);
+            //}
         }
 
         private void getInRangeBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (zipCodeTxt != null && rangeTxt.Text != "")
-            {
-                IEnumerable<ZipCodeData> data = _Proxy.GetZips(int.Parse(rangeTxt.Text));
-                if (data != null)
-                {
-                    zipCodesLst.ItemsSource = data;
-                }
-            }
+            //if (zipCodeTxt != null && rangeTxt.Text != "")
+            //{
+            //    IEnumerable<ZipCodeData> data = _Proxy.GetZips(int.Parse(rangeTxt.Text));
+            //    if (data != null)
+            //    {
+            //        zipCodesLst.ItemsSource = data;
+            //    }
+            //}
         }
     }
 }

@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace GeoLib.Services
 {
-    [ServiceBehavior(IncludeExceptionDetailInFaults = true, InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class GeoManager : IGeoService
     {
         public GeoManager()
@@ -46,7 +46,7 @@ namespace GeoLib.Services
             IZipCodeRepository zipCodeRepository = _ZipCodeRepository ?? new ZipCodeRepository();
 
             ZipCode zipCodeEntity = zipCodeRepository.GetByZip(zip);
-            if(zipCodeEntity != null)
+            if (zipCodeEntity != null)
             {
                 zipCodeData = new ZipCodeData()
                 {
@@ -55,11 +55,26 @@ namespace GeoLib.Services
                     ZipCode = zipCodeEntity.Zip
                 };
             }
+            else
+            {
+                //throw new FaultException(string.Format("Zip code {0} not found.", zip));
+                
+                //throw new ApplicationException(string.Format("Zip code {0} not found.", zip));
+
+                //ApplicationException ex = new ApplicationException(string.Format("Zip code {0} not found.", zip));
+
+                //throw new FaultException<ApplicationException>(ex, "Reason for failure.");
+
+                NotFoundData data = new NotFoundData()
+                {
+                    Message = string.Format("Zip code {0} not found.", zip),
+                    When = DateTime.Now.ToString(),
+                    User = "ghooo"
+                };
+                throw new FaultException<NotFoundData>(data, "Just another message.");
+            }
 
             _Counter++;
-            MessageBox.Show(
-                string.Format("{0} = {1}, {2}", zip, zipCodeData.City, zipCodeData.State),
-                "Call counter " + _Counter);
 
             return zipCodeData;
         }
