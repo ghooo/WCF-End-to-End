@@ -7,6 +7,7 @@ using System.ServiceModel.Channels;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -218,6 +219,56 @@ namespace GeoLib.Client
             //        zipCodesLst.ItemsSource = data;
             //    }
             //}
+        }
+
+        private void updateBatchBtn_Click(object sender, RoutedEventArgs e)
+        {
+            List<ZipCityData> cityZipList = new List<ZipCityData>()
+            {
+                new ZipCityData() { ZipCode = "07035", City = "Bedrock" },
+                new ZipCityData() { ZipCode = "33030", City = "End of the World" }
+            };
+
+            try
+            {
+                GeoClient proxy = new GeoClient("tcpEP");
+
+                using (TransactionScope scope = new TransactionScope())
+                {
+                    proxy.UpdateZipCity(cityZipList);
+                    proxy.Close();
+
+                    throw new ApplicationException("uh oh");
+                    scope.Complete();
+                }
+                proxy.Close();
+
+                MessageBox.Show("Updated.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Exception: " + ex.Message);
+            }
+      }
+
+        private void putBackBtn_Click(object sender, RoutedEventArgs e)
+        {
+            List<ZipCityData> cityZipList = new List<ZipCityData>()
+            {
+                new ZipCityData() { ZipCode = "07035", City = "Lincoln Park" },
+                new ZipCityData() { ZipCode = "33030", City = "Homestead" }
+            };
+
+            try
+            {
+                _Proxy.UpdateZipCity(cityZipList);
+
+                MessageBox.Show("Updated.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Exception: " + ex.Message);
+            }
         }
     }
 }

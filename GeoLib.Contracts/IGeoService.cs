@@ -23,5 +23,13 @@ namespace GeoLib.Contracts
 
         [OperationContract(Name = "GetZipsForRange")]
         IEnumerable<ZipCodeData> GetZips(string zip, int range);
+
+        [OperationContract(Name = "UpdateZipCity")]
+        [TransactionFlow(TransactionFlowOption.Allowed)]
+        void UpdateZipCity(string zip, string city);
+
+        [OperationContract(Name = "UpdateZipCities")]
+        [TransactionFlow(TransactionFlowOption.Allowed)]
+        void UpdateZipCity(IEnumerable<ZipCityData> zipCityData);
     }
 }

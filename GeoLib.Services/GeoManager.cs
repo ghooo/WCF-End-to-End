@@ -8,11 +8,15 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Windows;
 
 namespace GeoLib.Services
 {
-    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
+    // When transaction is turned on the session boundary is equated witht the transaction boundary, which means
+    // after the transaction is over the session is over (esp. in PerSession). To turn this off use: 
+    // ReleaseServiceInstanceOnTransactionComplete = false
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true, ReleaseServiceInstanceOnTransactionComplete = false, InstanceContextMode = InstanceContextMode.PerSession)]
     public class GeoManager : IGeoService
     {
         public GeoManager()
@@ -58,7 +62,7 @@ namespace GeoLib.Services
             else
             {
                 //throw new FaultException(string.Format("Zip code {0} not found.", zip));
-                
+
                 //throw new ApplicationException(string.Format("Zip code {0} not found.", zip));
 
                 //ApplicationException ex = new ApplicationException(string.Format("Zip code {0} not found.", zip));
@@ -139,6 +143,77 @@ namespace GeoLib.Services
             }
 
             return zipCodeData;
+        }
+
+        [OperationBehavior(TransactionScopeRequired = true)]
+        public void UpdateZipCity(string zip, string city)
+        {
+            IZipCodeRepository zipCodeRepository = _ZipCodeRepository ?? new ZipCodeRepository();
+
+            ZipCode zipEntity = zipCodeRepository.GetByZip(zip);
+            if (zipEntity != null)
+            {
+                zipEntity.City = city;
+                zipCodeRepository.Update(zipEntity);
+            }
+        }
+
+        //[OperationBehavior(TransactionScopeRequired = true, TransactionAutoComplete = false)]
+        //[OperationBehavior(TransactionScopeRequired = false)]
+        [OperationBehavior(TransactionScopeRequired = true)]
+        public void UpdateZipCity(IEnumerable<ZipCityData> zipCityData)
+        {
+            IZipCodeRepository zipCodeRepository = _ZipCodeRepository ?? new ZipCodeRepository();
+            int counter = 0;
+
+            foreach (ZipCityData zipCityItem in zipCityData)
+            {
+                counter++;
+
+                //if (counter == 2)
+                //{
+                //    throw new FaultException("sorry, no can do.");
+                //}
+
+                ZipCode zipCodeEntity = zipCodeRepository.GetByZip(zipCityItem.ZipCode);
+                zipCodeEntity.City = zipCityItem.City;
+                ZipCode updateItem = zipCodeRepository.Update(zipCodeEntity);
+            }
+
+            //using (TransactionScope scope = new TransactionScope())
+            //{
+
+            //    int counter = 0;
+
+            //    foreach (ZipCityData zipCityItem in zipCityData)
+            //    {
+            //        counter++;
+
+            //        if (counter == 2)
+            //        {
+            //            throw new FaultException("sorry, no can do.");
+            //        }
+
+            //        ZipCode zipCodeEntity = zipCodeRepository.GetByZip(zipCityItem.ZipCode);
+            //        zipCodeEntity.City = zipCityItem.City;
+            //        ZipCode updateItem = zipCodeRepository.Update(zipCodeEntity);
+            //    }
+
+            //    scope.Complete();
+            //}
+
+            //OperationContext.Current.SetTransactionComplete();
+
+            //IZipCodeRepository zipCodeRepository = _ZipCodeRepository ?? new ZipCodeRepository();
+
+            //Dictionary<string, string> cityBatch = new Dictionary<string, string>();
+
+            //foreach (ZipCityData zipCityItem in zipCityData)
+            //{
+            //    cityBatch.Add(zipCityItem.ZipCode, zipCityItem.City);
+            //}
+
+            //zipCodeRepository.UpdateCityBatch(cityBatch);
         }
     }
 }
